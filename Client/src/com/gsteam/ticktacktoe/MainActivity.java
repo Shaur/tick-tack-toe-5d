@@ -1,14 +1,18 @@
 package com.gsteam.ticktacktoe;
 
+import java.util.logging.Logger;
+
 import com.gsteam.ticktacktoe.Views.GameView;
+import com.gsteam.ticktacktoe.Views.GameViewListner;
 import com.gsteam.ticktacktoe.Views.MainMenuListner;
 import com.gsteam.ticktacktoe.Views.MainMenuView;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-public class MainActivity extends Activity implements MainMenuListner
+public class MainActivity extends Activity implements MainMenuListner, GameViewListner
 {
 	private RelativeLayout mainActivityLayout;
 	private MainMenuView mainMenu;
@@ -21,7 +25,7 @@ public class MainActivity extends Activity implements MainMenuListner
 		mainMenu = new MainMenuView(this, this);
 		mainActivityLayout.addView(mainMenu);
 		
-		gameView = new GameView(this);
+		gameView = new GameView(this, this);
 		gameView.setVisibility(LinearLayout.GONE);
 		mainActivityLayout.addView(gameView);
 	}
@@ -39,6 +43,10 @@ public class MainActivity extends Activity implements MainMenuListner
 	public void onSettingsClick() {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	public void onFieldObjectClick(int x, int y) {
+		Log.e("GGG", "" + new Integer(x).toString() + "_" + new Integer(y).toString());
 	}
 
 }

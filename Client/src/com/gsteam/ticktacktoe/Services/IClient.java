@@ -1,4 +1,5 @@
-package com.gsteam.ticktacktoe;
+package com.gsteam.ticktacktoe.Services;
+
 
 public interface IClient {
 	void hasConnected(IClientHasConnectedListner listner);

@@ -1,4 +1,4 @@
-package com.gsteam.ticktacktoe;
+package com.gsteam.ticktacktoe.Services;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,6 +10,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+
 
 public class Client implements IClient {
 	private static IClient client = null;

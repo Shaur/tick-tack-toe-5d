@@ -1,4 +1,4 @@
-package com.gsteam.ticktacktoe;
+package com.gsteam.ticktacktoe.Services;
 
 public interface ExecuterListner {
 	void onComplete(String result);

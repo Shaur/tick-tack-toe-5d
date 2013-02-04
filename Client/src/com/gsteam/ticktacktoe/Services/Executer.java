@@ -1,4 +1,4 @@
-package com.gsteam.ticktacktoe;
+package com.gsteam.ticktacktoe.Services;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
