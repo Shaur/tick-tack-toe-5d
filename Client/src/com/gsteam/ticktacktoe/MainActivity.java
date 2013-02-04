@@ -1,38 +1,44 @@
 package com.gsteam.ticktacktoe;
 
+import com.gsteam.ticktacktoe.Views.GameView;
+import com.gsteam.ticktacktoe.Views.MainMenuListner;
+import com.gsteam.ticktacktoe.Views.MainMenuView;
 import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
-import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-public class MainActivity extends Activity implements IClientHasConnectedListner {
-
-	private TextView text;
+public class MainActivity extends Activity implements MainMenuListner
+{
+	private RelativeLayout mainActivityLayout;
+	private MainMenuView mainMenu;
+	private GameView gameView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		text = (TextView) findViewById(R.id.textOut);
-		IClient c = Client.GetInstance();
-		c.hasConnected(this);
-		//txt.setText(c.hasConnected() ? "1" : "2");
+		mainActivityLayout = (RelativeLayout)findViewById(R.id.mainActivityLayout);
+		mainMenu = new MainMenuView(this, this);
+		mainActivityLayout.addView(mainMenu);
+		
+		gameView = new GameView(this);
+		gameView.setVisibility(LinearLayout.GONE);
+		mainActivityLayout.addView(gameView);
 	}
-
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
+	public void onNewGameClick() {
+		mainMenu.setVisibility(LinearLayout.GONE);
+		gameView.setVisibility(LinearLayout.VISIBLE);
 	}
-
 	@Override
-	public synchronized void hasConnected() {
-		text.setText("true");
+	public void onViewScoresClick() {
+		// TODO Auto-generated method stub
+		
 	}
-
 	@Override
-	public synchronized void hasDisconnected() {
-		text.setText("false");
+	public void onSettingsClick() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

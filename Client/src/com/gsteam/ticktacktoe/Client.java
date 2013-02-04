@@ -13,8 +13,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 public class Client implements IClient {
 	private static IClient client = null;
-	private static String server = "http://192.168.1.113:8080";
-	private static String ping = "/ping";
+	private final String server = "http://192.168.1.113:8080";
+	private final String ping = "/ping";
 	
 	public static synchronized IClient GetInstance() {
 		if(client == null)
