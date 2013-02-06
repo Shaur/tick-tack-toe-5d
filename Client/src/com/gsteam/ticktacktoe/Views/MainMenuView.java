@@ -1,12 +1,9 @@
 package com.gsteam.ticktacktoe.Views;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 
 public class MainMenuView extends LinearLayout
 {
@@ -14,6 +11,8 @@ public class MainMenuView extends LinearLayout
 	private final MainMenuListner listner;
 	public MainMenuView(Context context, MainMenuListner mainMenuListner) {
 		super(context);
+		
+		setVisibility(LinearLayout.GONE);
 		
 		if(mainMenuListner == null) {
 			throw new NullPointerException("mainMenuListner");
@@ -57,5 +56,13 @@ public class MainMenuView extends LinearLayout
 		addView(newGame);
 		addView(viewScores);
 		addView(settings);
-	}	
+	}
+	
+	public void show() {
+		setVisibility(LinearLayout.VISIBLE);
+	}
+	
+	public void hide() {
+		setVisibility(LinearLayout.GONE);
+	}
 }

@@ -1,21 +1,9 @@
 package com.gsteam.ticktacktoe.Services;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-
 public class Client implements IClient {
 	private static IClient client = null;
-	private final String server = "http://192.168.1.113:8080";
-	private final String ping = "/ping";
+	private final String server = "http://192.168.1.111:8080/";
+	private final String getDeviceKey = "getDeviceKey?key=";
 	
 	public static synchronized IClient GetInstance() {
 		if(client == null)
@@ -28,23 +16,19 @@ public class Client implements IClient {
 	}
 
 	@Override
-	public void hasConnected(final IClientHasConnectedListner listner) {
+	public void getClientKey(String deviceId, final ClienStringListner listner) {
 		Executer e = new Executer(new ExecuterListner() {
 			
 			@Override
-			public void onComplete(String result) {
-				if (result.equals("pong")) {
-					listner.hasConnected();
-				} else {
-					listner.hasDisconnected();
-				}			
+			public synchronized void onComplete(String result) {
+				listner.onResult(result);
 			}
 			
 			@Override
-			public void connectionError() {
-				listner.hasDisconnected();
+			public synchronized void connectionError() {
+				listner.connectionError();
 			}
-		}, server + ping);
-		new Thread(e).start();
+		}, server + getDeviceKey + deviceId);
+		e.execute();
 	}
 }

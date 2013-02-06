@@ -3,8 +3,6 @@ package com.gsteam.ticktacktoe.Views;
 import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.LinearLayout.LayoutParams;
 
 public class GameView extends LinearLayout
 {
@@ -14,6 +12,8 @@ public class GameView extends LinearLayout
 	
 	public GameView(Context context, GameViewListner gameViewListner) {
 		super(context);
+		
+		setVisibility(LinearLayout.GONE);
 		
 		if(gameViewListner == null) {
 			throw new NullPointerException("gameViewListner");
@@ -55,5 +55,13 @@ public class GameView extends LinearLayout
 		for(int i = 0; i < w; i++) {
 			addView(lines[i]);		
 		}
+	}
+	
+	public void show() {
+		setVisibility(LinearLayout.VISIBLE);
+	}
+	
+	public void hide() {
+		setVisibility(LinearLayout.GONE);
 	}
 }

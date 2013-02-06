@@ -47,13 +47,27 @@ function tryit (req, res) {
 	});
 }
 
-function ping (req, res) {
-	res.send ("pong");
+function getDeviceKey (req, res) {
+	var device = req.query.key;
+	//res.send ("pong " + device);
+	console.log (device);
+	if (undefined == device) {
+		return;
+	}
+
+	var cursor = collection("users").find({"Device": device});
+	cursor.nextObject(function (err, doc) {
+		if (doc != null) {
+
+		} else {
+
+		}
+	});
 }
 
 function appInit () {
 	var app = express();
-	app.get ("/ping", ping);
+	app.get ("/getDeviceKey", getDeviceKey);
 	app.get ("/", index);
 	app.get ("/get", get);
 	app.get ("/tryit", tryit);

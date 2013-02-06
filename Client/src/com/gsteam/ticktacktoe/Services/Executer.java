@@ -1,17 +1,17 @@
 package com.gsteam.ticktacktoe.Services;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-public class Executer implements Runnable {
+import android.os.AsyncTask;
+
+public class Executer extends AsyncTask<Void, Void, Void> {
 	private ExecuterListner listner;
 	private String url;
 	public Executer(ExecuterListner listner, String url) {
@@ -20,7 +20,7 @@ public class Executer implements Runnable {
 	}
 	
 	@Override
-	public void run() {
+	protected Void doInBackground(Void... params) {
 		HttpClient httpclient = new DefaultHttpClient();
 		try {
 			HttpResponse response = httpclient.execute(new HttpGet(url));
@@ -31,20 +31,14 @@ public class Executer implements Runnable {
 		        out.close();
 		        String responseString = out.toString();
 		        listner.onComplete(responseString);
-		        return;
+		        return null;
 		    } else{
 		        response.getEntity().getContent().close();
-		        listner.connectionError();
-		        return;
 		    }
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			//e.printStackTrace();
 		}
 		listner.connectionError();
-        return;
-		
+		return null;
 	}
-	
 }
