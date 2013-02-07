@@ -49,25 +49,61 @@ function tryit (req, res) {
 
 function getDeviceKey (req, res) {
 	var device = req.query.key;
-	//res.send ("pong " + device);
-	console.log (device);
 	if (undefined == device) {
+		res.send ("");
 		return;
 	}
 
-	var cursor = collection("users").find({"Device": device});
+	var cursor = collection("users").find({"device": device});
 	cursor.nextObject(function (err, doc) {
 		if (doc != null) {
-
+			res.send (doc._id.toString());
 		} else {
-
+			var id = new mongo.ObjectID();
+			collection("users").insert(
+				{"_id": id, "device": device},
+				{safe: true},
+				function (err, objects) {
+					res.send (id.toString());
+				}
+			);
 		}
+	});
+}
+
+function play (req, res) {
+	var id = req.query.id;
+	if (undefined == id) {
+		res.send ("");
+		return;
+	}
+
+	try {
+		id = new mongo.ObjectID(id);
+	} catch (err) {
+		res.send ("");
+		return;
+	}
+
+	var cursor = collection("users").find({"_id": id});
+	cursor.nextObject(function (err, doc) {
+		if (doc == null) {
+			res.send ("");
+			return;
+		}
+		res.send (doc.device);
+		return;
 	});
 }
 
 function appInit () {
 	var app = express();
+	//work
 	app.get ("/getDeviceKey", getDeviceKey);
+	app.get ("/play", play);
+
+
+	//test
 	app.get ("/", index);
 	app.get ("/get", get);
 	app.get ("/tryit", tryit);

@@ -10,8 +10,10 @@ import com.gsteam.ticktacktoe.Views.MainMenuListner;
 import com.gsteam.ticktacktoe.Views.MainMenuView;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.util.Log;
@@ -24,6 +26,8 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 	private GameView gameView;
 	private IClient client;
 	private ISettings settings;
+	private String key;
+	private ProgressDialog progressDialog;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,15 +56,20 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 	}
 	
 	private void initKey() {
+		showLoadingDialog();
 		client.getClientKey(settings.getDeviceId(), new ClienStringListner() {
 			@Override
-			public void onResult(String result) {
-				settings.setServerKey(result);
+			public void onResult(final String result) {
+				runOnUiThread(new Runnable() { public void run() {
+					key = result;
+					hideLoadingDialog();
+				}});
 			}
 			
 			@Override
 			public void connectionError() {
 				runOnUiThread(new Runnable() { public void run() {
+					hideLoadingDialog();
 					showConnectionAlert(new OnClickListener() {					
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -113,5 +122,12 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 		builder.setPositiveButton("OK", listener);
 		builder.create().show();
 	}
-
+	
+	private void hideLoadingDialog() {
+		progressDialog.dismiss();
+	}
+	
+	private void showLoadingDialog() {
+		progressDialog = ProgressDialog.show(this, "", "Загрузка, пожалуйста подождите...", true);
+	}
 }
