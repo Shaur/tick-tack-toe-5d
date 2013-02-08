@@ -20,8 +20,13 @@ function appInit () {
 			res.send (result);
 		});
 	});
-	app.get ("/play", function (req, res) {
-		gameService.play (req, res, function (result) {
+	app.get ("/getGameByUser", function (req, res) {
+		gameService.getGameByUser (req, res, function (result) {
+			res.send (result);
+		});
+	});
+	app.use ("/makeMove", function (req, res) {
+		gameService.makeMove (req, res, function (result) {
 			res.send (result);
 		});
 	});
