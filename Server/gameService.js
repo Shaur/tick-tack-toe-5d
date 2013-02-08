@@ -99,7 +99,7 @@ function getCurrentGame (userId, callback) {
 	});
 }
 
-function main (req, res, callback) {
+function play (req, res, callback) {
 	processQuery (req.query.id, function (userId) {
 		if (userId == null) {
 			callback ("");
@@ -114,5 +114,5 @@ function main (req, res, callback) {
 	});
 }
 
-this.main = main;
+this.play = play;
 this.setup = setup;

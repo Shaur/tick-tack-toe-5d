@@ -5,7 +5,7 @@ function setup (dbUsers) {
 	users = dbUsers;
 }
 
-function main (req, res, callback) {
+function getDeviceKey (req, res, callback) {
 	var device = req.query.key;
 	if (undefined == device) {
 		callback ("");
@@ -29,5 +29,5 @@ function main (req, res, callback) {
 	});
 }
 
-this.main = main;
+this.getDeviceKey = getDeviceKey;
 this.setup = setup;
