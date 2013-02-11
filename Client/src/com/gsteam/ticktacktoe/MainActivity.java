@@ -1,7 +1,12 @@
 package com.gsteam.ticktacktoe;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.gsteam.ticktacktoe.Services.ClienGameListner;
 import com.gsteam.ticktacktoe.Services.ClienStringListner;
 import com.gsteam.ticktacktoe.Services.Client;
+import com.gsteam.ticktacktoe.Services.Game;
 import com.gsteam.ticktacktoe.Services.IClient;
 import com.gsteam.ticktacktoe.Services.ISettings;
 import com.gsteam.ticktacktoe.Views.GameView;
@@ -28,7 +33,6 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 	private ISettings settings;
 	private String key;
 	private ProgressDialog progressDialog;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -97,6 +101,29 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 	public void onNewGameClick() {
 		mainMenu.hide();
 		gameView.show();
+		showLoadingDialog();
+		client.getGame(key, new ClienGameListner() {
+			
+			@Override
+			public void onResult(Game result) {
+				runOnUiThread(new Runnable() { public void run() {
+					hideLoadingDialog();
+				}});
+			}
+			
+			@Override
+			public void connectionError() {
+				runOnUiThread(new Runnable() { public void run() {
+					hideLoadingDialog();
+					showConnectionAlert(new OnClickListener() {					
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							onNewGameClick();
+						}
+					});
+				}});				
+			}
+		});
 	}
 	
 	@Override
