@@ -1,10 +1,5 @@
 package com.gsteam.ticktacktoe.Services;
 
-import java.text.ParseException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class Client implements IClient {
 	private static IClient client = null;
 	private final String server = "http://192.168.1.111:8080/";

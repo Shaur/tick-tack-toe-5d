@@ -1,8 +1,5 @@
 package com.gsteam.ticktacktoe;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.gsteam.ticktacktoe.Services.ClienGameListner;
 import com.gsteam.ticktacktoe.Services.ClienStringListner;
 import com.gsteam.ticktacktoe.Services.Client;
@@ -15,13 +12,11 @@ import com.gsteam.ticktacktoe.Views.MainMenuListner;
 import com.gsteam.ticktacktoe.Views.MainMenuView;
 
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.util.Log;
 import android.widget.RelativeLayout;
 
 public class MainActivity extends Activity implements MainMenuListner, GameViewListner
