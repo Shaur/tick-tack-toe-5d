@@ -5,6 +5,7 @@ public class Client implements IClient {
 	private final String server = "http://192.168.1.111:8080/";
 	private final String getDeviceKey = "getDeviceKey?key=";
 	private final String getGameByUser = "getGameByUser?id=";
+	private final String makeMove="makeMove?id=";
 	
 	public static synchronized IClient GetInstance() {
 		if(client == null)
@@ -51,6 +52,27 @@ public class Client implements IClient {
 				listner.connectionError();
 			}
 		}, server + getGameByUser + clientKey);
-		e.execute();		
+		e.execute();
+	}
+
+	@Override
+	public void makeMove(String clientKey, Integer x, Integer y,
+			final ClienBooleanListner listner) {
+		Executer e = new Executer(new ExecuterListner() {
+			
+			@Override
+			public synchronized void onComplete(String result) {
+				if(result.equals("true"))
+					listner.onResult(true);
+				else
+					listner.onResult(false);
+			}
+			
+			@Override
+			public synchronized void connectionError() {
+				listner.connectionError();
+			}
+		}, server + makeMove + clientKey + "&x=" + x.toString() + "&y=" + y.toString());
+		e.execute();
 	}
 }

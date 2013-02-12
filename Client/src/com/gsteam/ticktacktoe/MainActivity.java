@@ -17,6 +17,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.util.Log;
 import android.widget.RelativeLayout;
 
 public class MainActivity extends Activity implements MainMenuListner, GameViewListner
@@ -34,24 +35,28 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 		
 		setContentView(R.layout.activity_main);
 		
-		//options = PreferenceManager.getDefaultSharedPreferences(this);
-		//options.
-		//options = getPreferences(Context.MODE_PRIVATE).edit();
-		//options.putString("password", mPassword);
-		//options.commit();
 		settings = (ISettings) new com.gsteam.ticktacktoe.Services.Settings(this);
-		/*if(settings.getString("dk") == null)
-		{
-			settings.setString("dk", "123");
-			Log.e("GGG", "SET!!!");
-		} else {
-			Log.e("GGG", "GET!!!" + settings.getString("dk"));
-		}*/
 		
 		client = Client.GetInstance();
 		initKey();
 		
+		//makeMove usage sample
+		/*client.makeMove("5113c973b93f4c6704000002", 2, 3, new ClienBooleanListner() {
+
+			@Override
+			public void onResult(Boolean result) {
+				Log.e(">>>>>>>", result.toString());
+			}
+
+			@Override
+			public void connectionError() {
+				Log.e(">>>>>>>", "e");
+			}
+			
+		});*/
+		
 		initUI();
+		Log.i("ticktacktoe", "onCreate complete");
 	}
 	
 	private void initKey() {
