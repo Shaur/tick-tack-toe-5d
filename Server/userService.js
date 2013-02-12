@@ -5,8 +5,8 @@ function setup (dbUsers) {
 	users = dbUsers;
 }
 
-function getDeviceKey (req, res, callback) {
-	var device = req.query.key;
+function getDeviceKey (deviceId, callback) {
+	var device = deviceId;
 	if (undefined == device) {
 		callback ("");
 		return;

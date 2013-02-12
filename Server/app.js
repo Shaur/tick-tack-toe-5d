@@ -16,17 +16,17 @@ function appInit () {
 	var app = express();
 	
 	app.get ("/getDeviceKey", function (req, res) {
-		userService.getDeviceKey (req, res, function (result) {
+		userService.getDeviceKey (req.query.key, function (result) {
 			res.send (result);
 		});
 	});
 	app.get ("/getGameByUser", function (req, res) {
-		gameService.getGameByUser (req, res, function (result) {
+		gameService.getGameByUser (req.query.id, function (result) {
 			res.send (result);
 		});
 	});
 	app.use ("/makeMove", function (req, res) {
-		gameService.makeMove (req, res, function (result) {
+		gameService.makeMove (req.query.id, req.query.x, req.query.y, function (result) {
 			res.send (result);
 		});
 	});

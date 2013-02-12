@@ -99,8 +99,8 @@ function getCurrentGame (userId, callback) {
 	});
 }
 
-function getGameByUser (req, res, callback) {
-	processQuery (req.query.id, function (userId) {
+function getGameByUser (id, callback) {
+	processQuery (id, function (userId) {
 		if (userId == null) {
 			callback ("");
 			return;
@@ -125,25 +125,25 @@ function updateGame (game, x, y, val, move, callback) {
 	});
 }
 
-function makeMove (req, res, callback) {
-	processQuery (req.query.id, function (userId) {
+function makeMove (id, x, y, callback) {
+	processQuery (id, function (userId) {
 		if (userId == null) {
 			callback ("");
 			return;
 		}
 
-		if (undefined == req.query.x || undefined == req.query.y) {
+		if (undefined == x || undefined == y) {
 			callback ("");
 			return;
 		}
 
 		getCurrentGame (userId, function (game) {
 			if (game.createdBy.toString () == userId.toString () && game.move == "1") {
-				updateGame (game, parseInt (req.query.x), parseInt (req.query.y), 1, "2", function () {
+				updateGame (game, parseInt (x), parseInt (y), 1, "2", function () {
 					callback ("true");
 				});
 			} else if (game.opponent.toString () == userId.toString () && game.move == "2") {
-				updateGame (game, parseInt (req.query.x), parseInt (req.query.y), 2, "1", function () {
+				updateGame (game, parseInt (x), parseInt (y), 2, "1", function () {
 					callback ("true");					
 				});
 			} else {
