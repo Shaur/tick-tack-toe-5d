@@ -30,6 +30,11 @@ function appInit () {
 			res.send (result);
 		});
 	});
+	app.use ("/getSetName", function (req, res) {
+		userService.getSetName (req.query.id, req.query.name, function (result) {
+			res.send (result);
+		});
+	});
 
 	app.listen(8080);
 }
