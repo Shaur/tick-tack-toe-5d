@@ -10,6 +10,8 @@ import com.gsteam.ticktacktoe.Views.GameView;
 import com.gsteam.ticktacktoe.Views.GameViewListner;
 import com.gsteam.ticktacktoe.Views.MainMenuListner;
 import com.gsteam.ticktacktoe.Views.MainMenuView;
+import com.gsteam.ticktacktoe.Views.SettingsListner;
+import com.gsteam.ticktacktoe.Views.SettingsView;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -20,7 +22,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
-public class MainActivity extends Activity implements MainMenuListner, GameViewListner
+public class MainActivity extends Activity implements MainMenuListner, GameViewListner, SettingsListner
 {
 	private RelativeLayout mainActivityLayout;
 	private MainMenuView mainMenu;
@@ -29,6 +31,7 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 	private ISettings settings;
 	private String key;
 	private ProgressDialog progressDialog;
+	private SettingsView settingsView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,6 +97,9 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 		gameView = new GameView(this, this);
 		mainActivityLayout.addView(gameView);
 		
+		settingsView = new SettingsView(this, this);
+		mainActivityLayout.addView(settingsView);
+		
 		mainMenu.show();
 	}
 	
@@ -134,8 +140,30 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 	
 	@Override
 	public void onSettingsClick() {
-		// TODO Auto-generated method stub
-		
+		showLoadingDialog();
+		client.getName(key, new ClienStringListner() {			
+			@Override
+			public void onResult(final String result) {
+				runOnUiThread(new Runnable() { public void run() {
+					hideLoadingDialog();
+					settingsView.setText(result);
+					mainMenu.hide();
+					settingsView.show();
+				}});
+			}			
+			@Override
+			public void connectionError() {
+				runOnUiThread(new Runnable() { public void run() {
+					hideLoadingDialog();
+					showConnectionAlert(new OnClickListener() {					
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							onSettingsClick();
+						}
+					});
+				}});
+			}
+		});
 	}
 	
 	@Override
@@ -150,11 +178,61 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 		builder.create().show();
 	}
 	
+	private void showAlert(String message) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(message).setCancelable(false);
+		builder.setPositiveButton("OK", null);
+		builder.create().show();
+	}
+	
 	private void hideLoadingDialog() {
 		progressDialog.dismiss();
 	}
 	
 	private void showLoadingDialog() {
 		progressDialog = ProgressDialog.show(this, "", "Загрузка, пожалуйста подождите...", true);
+	}
+
+	@Override
+	public void onNewNameClick(final String name) {
+		showLoadingDialog();
+		client.setName(key, name, new ClienStringListner() {
+			@Override
+			public void onResult(final String result) {
+				runOnUiThread(new Runnable() { public void run() {
+					hideLoadingDialog();
+					if (!result.equals("")) {
+						settingsView.setText(name);
+					} else {
+						showAlert("Пользователь с таким именем уже зарегистрирован");
+					}
+				}});
+			}
+			@Override
+			public void connectionError() {
+				runOnUiThread(new Runnable() { public void run() {
+					hideLoadingDialog();
+					showConnectionAlert(new OnClickListener() {					
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							onNewNameClick(name);
+						}
+					});
+				}});
+			}
+		});
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if(mainMenu.getIsVisible())
+		{
+			super.onBackPressed();
+			return;
+		}
+		
+		gameView.hide();
+		settingsView.hide();
+		mainMenu.show();
 	}
 }

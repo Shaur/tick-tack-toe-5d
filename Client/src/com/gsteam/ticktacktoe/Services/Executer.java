@@ -10,6 +10,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class Executer extends AsyncTask<Void, Void, Void> {
 	private ExecuterListner listner;
@@ -31,6 +32,7 @@ public class Executer extends AsyncTask<Void, Void, Void> {
 		        out.close();
 		        String responseString = out.toString();
 		        listner.onComplete(responseString);
+		        Log.i("Executer::doInBackground", "onComplete");
 		        return null;
 		    } else{
 		        response.getEntity().getContent().close();
@@ -39,6 +41,7 @@ public class Executer extends AsyncTask<Void, Void, Void> {
 			//e.printStackTrace();
 		}
 		listner.connectionError();
+		Log.i("Executer::doInBackground", "connectionError");
 		return null;
 	}
 }

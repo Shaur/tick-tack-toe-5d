@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 
 public class MainMenuView extends LinearLayout
 {
+	private Boolean isVisible = false;
 	private Button newGame, viewScores, settings;
 	private final MainMenuListner listner;
 	public MainMenuView(Context context, MainMenuListner mainMenuListner) {
@@ -59,10 +60,16 @@ public class MainMenuView extends LinearLayout
 	}
 	
 	public void show() {
+		isVisible = true;
 		setVisibility(LinearLayout.VISIBLE);
 	}
 	
 	public void hide() {
+		isVisible = false;
 		setVisibility(LinearLayout.GONE);
+	}
+
+	public Boolean getIsVisible() {
+		return isVisible;
 	}
 }
