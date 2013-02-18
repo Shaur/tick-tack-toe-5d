@@ -1,2 +1,2 @@
-tick-tack-toe-5d
+tick-tack-toe-5d (игра)
 ================
