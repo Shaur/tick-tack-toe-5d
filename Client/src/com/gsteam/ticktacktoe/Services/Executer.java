@@ -8,6 +8,9 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -22,7 +25,14 @@ public class Executer extends AsyncTask<Void, Void, Void> {
 	
 	@Override
 	protected Void doInBackground(Void... params) {
-		HttpClient httpclient = new DefaultHttpClient();
+		
+		HttpParams httpParameters = new BasicHttpParams();
+		int timeoutConnection = 5000;
+		HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+		int timeoutSocket = 10000;
+		HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+		
+		HttpClient httpclient = new DefaultHttpClient(httpParameters);
 		try {
 			HttpResponse response = httpclient.execute(new HttpGet(url));
 			StatusLine statusLine = response.getStatusLine();
