@@ -4,7 +4,7 @@ import java.net.URLEncoder;
 
 public class Client implements IClient {
 	private static IClient client = null;
-	private final String server = "http://192.168.1.111:8080/";
+	private final String server = "http://212.232.75.196:8181/";
 	private final String getDeviceKey = "getDeviceKey?key=";
 	private final String getGameByUser = "getGameByUser?id=";
 	private final String makeMove="makeMove?id=";
