@@ -16,6 +16,7 @@ public class Game {
 	private String opponent;
 	private Integer move;
 	private Integer[][] field;
+	private Integer winner;
 		
 	public Game (String json) throws JSONException, ParseException {
 		field = new Integer[5][];
@@ -28,6 +29,7 @@ public class Game {
 		opponent = jObject.getString("opponent");
 		_id = jObject.getString("_id");
 		move = jObject.getInt("move");
+		winner = jObject.getInt("winner");
 		
 		JSONArray lines = jObject.getJSONArray("field");
 		for(int i = 0; i < lines.length(); i++) {
@@ -58,5 +60,8 @@ public class Game {
 	}
 	public Integer[][] getField() {
 		return field;
+	}
+	public Integer getWinner() {
+		return winner;
 	}
 }
