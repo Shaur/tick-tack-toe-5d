@@ -14,6 +14,90 @@ function setup (dbUsers, dbGames) {
 	games = dbGames;
 }
 
+function getWinner (field) {
+	var result = checkLine (field, true);
+	if (result != 0)
+		return result;
+
+	result = checkLine (field, false);
+	if (result != 0)
+		return result;
+
+	for (var i = -2; i < 3; i++) {
+		result = checkDiagonal (field, true, i);
+		if (result != 0)
+			return result;
+
+		result = checkDiagonal (field, false, i);
+		if (result != 0)
+			return result;
+	}
+	
+	return 0;
+}
+
+function checkDiagonal (field, isMain, offset) {
+	var count = 0;
+	var lastValue = 0;
+
+	for (var i = 0; i < 5; i++) {
+		if (isMain) {
+			if (((i + offset) > 4) || ((i + offset) < 0))
+				continue;
+			var value = field[i + offset][i];
+		} else {
+			if (((4 - i + offset) > 4) || ((4 - i + offset) < 0))
+				continue;
+			var value = field[4 - i + offset][i];
+		}
+
+		if (value == 0) {
+			count = 0;
+			lastValue = 0;
+		} else {
+			if (lastValue != value) {
+				count = 1;
+				lastValue = value;
+			} else {
+				count++;
+				if (count > 2) {
+					return value;
+				}
+			}
+		}
+
+	}
+	return 0;
+}
+
+function checkLine (field, isRow) {
+	for (var i = 0; i < 5; i++) {
+		var count = 0;
+		var lastValue = 0;
+		for (var j = 0; j < 5; j++) {
+			if (isRow)
+				var value = field[i][j];
+			else
+				var value = field[j][i];
+			if (value == 0) {
+				count = 0;
+				lastValue = 0;
+			} else {
+				if (lastValue != value) {
+					count = 1;
+					lastValue = value;
+				} else {
+					count++;
+					if (count > 2) {
+						return value;
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
 function processQuery (userId, callback) {
 	if (undefined == userId) {
 		callback (null);
@@ -64,7 +148,7 @@ function createNewGame (userId, callback) {
 	var now = new Date ();
 	var id = new mongo.ObjectID ();
 	games.insert (
-		{"_id": id, "date": now, "createdBy": userId, "opponent": "", "field": emptyField, "move": "1"},
+		{"_id": id, "date": now, "createdBy": userId, "opponent": "", "field": emptyField, "move": "1", "winner": "0"},
 		{safe: true},
 		function (err, docs) {
 			callback (docs[0]);
@@ -120,7 +204,12 @@ function updateGame (game, x, y, val, move, callback) {
 	if (field[x][y] == 0) {
 		field[x][y] = val;
 	}
-	games.update ({"_id": game._id}, {$set: {"move": move, "date": now, "field": field}}, {safe: true}, function (err, docs) {
+	
+	if (winner == 0) {
+		winner = getWinner (field);
+	}
+
+	games.update ({"_id": game._id}, {$set: {"move": move, "date": now, "field": field, "winner": winner}}, {safe: true}, function (err, docs) {
 		callback ();
 	});
 }
