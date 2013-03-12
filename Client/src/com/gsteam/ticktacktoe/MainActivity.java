@@ -1,11 +1,16 @@
 package com.gsteam.ticktacktoe;
 
+import com.gsteam.ticktacktoe.Services.ClienBooleanListner;
 import com.gsteam.ticktacktoe.Services.ClienGameListner;
 import com.gsteam.ticktacktoe.Services.ClienStringListner;
 import com.gsteam.ticktacktoe.Services.Client;
+import com.gsteam.ticktacktoe.Services.Executer;
+import com.gsteam.ticktacktoe.Services.ExecuterListner;
 import com.gsteam.ticktacktoe.Services.Game;
 import com.gsteam.ticktacktoe.Services.IClient;
 import com.gsteam.ticktacktoe.Services.ISettings;
+import com.gsteam.ticktacktoe.Views.FieldObject;
+import com.gsteam.ticktacktoe.Views.FieldObject.FieldType;
 import com.gsteam.ticktacktoe.Views.GameView;
 import com.gsteam.ticktacktoe.Views.GameViewListner;
 import com.gsteam.ticktacktoe.Views.MainMenuListner;
@@ -32,6 +37,7 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 	private String key;
 	private ProgressDialog progressDialog;
 	private SettingsView settingsView;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -108,12 +114,37 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 		mainMenu.hide();
 		gameView.show();
 		showLoadingDialog();
+		
+		updateField();
+	}
+	
+	private void updateField() {
 		client.getGame(key, new ClienGameListner() {
 			
 			@Override
-			public void onResult(Game result) {
+			public void onResult(final Game result) {
 				runOnUiThread(new Runnable() { public void run() {
 					hideLoadingDialog();
+					gameView.update(result.getField());
+					
+					// кто ходит (1 - создатель, 2 - оппонент)
+					Integer move = result.getMove();
+					String id;
+					if(1 == move)
+					{
+						id = result.getCreatedBy();
+					}
+					else
+					{
+						id = result.getOpponent();
+					}
+					
+					if(id.equals(key)) {
+						gameView.unlock();
+					}
+					else {
+						gameView.lock();
+					}
 				}});
 			}
 			
@@ -167,8 +198,35 @@ public class MainActivity extends Activity implements MainMenuListner, GameViewL
 	}
 	
 	@Override
-	public void onFieldObjectClick(int x, int y) {
+	public void onFieldObjectClick(final int x, final int y, final FieldType type) {
 		//Log.e("GGG", "" + new Integer(x).toString() + "_" + new Integer(y).toString());
+		
+		if(FieldType.EMPTY == type)
+		{
+			client.makeMove(key, x, y, new ClienBooleanListner() {
+	
+				@Override
+				public void onResult(Boolean result) {
+					runOnUiThread(new Runnable() { public void run() {
+						hideLoadingDialog();
+					}});
+				}
+	
+				@Override
+				public void connectionError() {
+					runOnUiThread(new Runnable() { public void run() {
+						hideLoadingDialog();
+						showConnectionAlert(new OnClickListener() {					
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								onFieldObjectClick(x, y, type);
+							}
+						});
+					}});
+				}
+			});
+			updateField();
+		}
 	}
 	
 	private void showConnectionAlert(OnClickListener listener) {
